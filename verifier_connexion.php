@@ -17,9 +17,9 @@ try {
 // Connexion au site
 if (isset($_POST['nom']) && isset($_POST['motDePasse'])) {
     $nom = $_POST['nom'];
-    $motDePasse = $_POST['motDePasse'];
+    $motDePasse = hash('sha256', $_POST['motDePasse']);
 
-    // Rêquete de connexion
+    // Requête de connexion
     $stmt = $pdo->prepare("SELECT * FROM utilisateur WHERE nom = :nom AND motDePasse = :motDePasse");
     $stmt->execute(['nom' => $nom, 'motDePasse' => $motDePasse]);
     $utilisateur = $stmt->fetch();
@@ -40,3 +40,4 @@ if (isset($_POST['nom']) && isset($_POST['motDePasse'])) {
     header("Location: login.php");
     exit();
 }
+?>

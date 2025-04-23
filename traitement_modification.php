@@ -39,7 +39,7 @@ if (!empty($nouveauNom)) {
 
 if (!empty($nouveauMotDePasse)) {
     $updates[] = "motDePasse = :motDePasse";
-    $params['motDePasse'] = $nouveauMotDePasse;
+    $params['motDePasse'] = hash('sha256', $nouveauMotDePasse);
 }
 
 $sql .= implode(', ', $updates) . " WHERE idUtilisateur = :idUtilisateur";
