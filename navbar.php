@@ -2,7 +2,7 @@
 if (!isset($_SESSION)) session_start();
 ?>
 
-<!-- Intégration de Bootstrap (à faire une seule fois si tu l’as déjà dans le layout) -->
+<!-- Intégration de Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
