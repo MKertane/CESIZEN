@@ -5,29 +5,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['motDePasse'])) {
         $nom = trim($_POST['nom']);
         $prenom = trim($_POST['prenom']);
-        $motDePasse = hash('sha256', trim($_POST['motDePasse']));
+        $motDePasseBrut = trim($_POST['motDePasse']);
 
-        try {
-            $pdo = new PDO("mysql:host=localhost;dbname=cesizen;charset=utf8", "root", "");
-            $stmt = $pdo->prepare("INSERT INTO utilisateur (nom, prenom, motDePasse) VALUES (:nom, :prenom, :motDePasse)");
-            $stmt->execute([
-                'nom' => $nom,
-                'prenom' => $prenom,
-                'motDePasse' => $motDePasse
-            ]);
+        // Vérification de la robustesse du mot de passe
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $motDePasseBrut)) {
+            $_SESSION['erreur'] = "Le mot de passe doit contenir au minimum 8 caractères, dont au moins une majuscule, une minuscule, un chiffre et un caractère spécial.";
+        } else {
+            // Hachage SHA-256 sans salt
+            $motDePasse = hash('sha256', $motDePasseBrut);
 
-            $_SESSION['message'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
-            header("Location: login.php");
-            exit();
-        } catch (PDOException $e) {
-            $_SESSION['erreur'] = "Erreur BDD : " . $e->getMessage();
+            try {
+                $pdo = new PDO("mysql:host=localhost;dbname=cesizen;charset=utf8", "root", "", [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                ]);
+                $stmt = $pdo->prepare("INSERT INTO utilisateur (nom, prenom, motDePasse) VALUES (:nom, :prenom, :motDePasse)");
+                $stmt->execute([
+                    'nom' => $nom,
+                    'prenom' => $prenom,
+                    'motDePasse' => $motDePasse
+                ]);
+
+                $_SESSION['message'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+                header("Location: login.php");
+                exit();
+            } catch (PDOException $e) {
+                $_SESSION['erreur'] = "Erreur BDD : " . $e->getMessage();
+            }
         }
     } else {
         $_SESSION['erreur'] = "Tous les champs doivent être remplis.";
     }
 }
 ?>
-
 <!-- HTML -->
 <!DOCTYPE html>
 <html lang="fr">
