@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $motDePasseBrut)) {
             $_SESSION['erreur'] = "Le mot de passe doit contenir au minimum 8 caractères, dont au moins une majuscule, une minuscule, un chiffre et un caractère spécial.";
         } else {
-            // Hachage SHA-256 sans salt, test commit feature
+            // Hachage SHA-256 sans salt
             $motDePasse = hash('sha256', $motDePasseBrut);
 
             try {
