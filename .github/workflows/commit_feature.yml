@@ -1,0 +1,22 @@
+name: Test Commit in Feature
+
+on:
+  push:
+    branches:
+      - feature
+
+jobs:
+  test-commit-feature:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Show confirmation message
+      run: echo "test commit_feature"
+
+    - name: Show latest commit
+      run: |
+        echo "Dernier commit sur la branche feature :"
+        git log -1 --pretty=format:"%h - %an : %s"
