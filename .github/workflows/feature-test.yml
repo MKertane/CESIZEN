@@ -1,0 +1,14 @@
+name: Vérification commit sur feature
+
+on:
+  push:
+    branches:
+      - feature
+
+jobs:
+  test-commit-feature:
+    runs-on: windows-latest
+
+    steps:
+      - name: Afficher message de test
+        run: echo "test commit_feature"
