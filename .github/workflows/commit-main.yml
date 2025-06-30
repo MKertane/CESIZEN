@@ -1,9 +1,9 @@
-name: Vérification commit sur feature
+name: Vérification commit sur main
 
 on:
   push:
     branches:
-      - feature
+      - main
 
 jobs:
   test-commit-feature:
@@ -11,4 +11,4 @@ jobs:
 
     steps:
       - name: Afficher message de test
-        run: echo "test commit_feature"
+        run: echo "test commit_main"
