@@ -1,4 +1,4 @@
-name: Test Commit in Feature
+name: Vérification commit sur feature
 
 on:
   push:
@@ -7,16 +7,8 @@ on:
 
 jobs:
   test-commit-feature:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Show confirmation message
-      run: echo "test commit_feature"
-
-    - name: Show latest commit
-      run: |
-        echo "Dernier commit sur la branche feature :"
-        git log -1 --pretty=format:"%h - %an : %s"
+      - name: Afficher message de test
+        run: echo "test commit_feature"
