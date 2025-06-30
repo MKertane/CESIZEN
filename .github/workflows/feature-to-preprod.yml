@@ -1,0 +1,20 @@
+name: Merge Feature to Preprod
+
+on:
+  push:
+    branches:
+      - preprod
+  pull_request:
+    branches:
+      - preprod
+    types: [closed]
+
+jobs:
+  detect-merge:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'preprod' && github.event.pull_request.head.ref == 'feature'
+    runs-on: ubuntu-latest
+    name: Annonce de merge feature -> preprod
+    steps:
+      - name: Affichage message
+        run: echo "✅ Merge de 'feature' vers 'preprod' effectué avec succès pour les tests !"
+
