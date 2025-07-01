@@ -1,0 +1,15 @@
+
+name: Vérification commit sur bugfix
+
+on:
+  push:
+    branches:
+      - bugfix
+
+jobs:
+  test-commit-bugfix:
+    runs-on: windows-latest
+
+    steps:
+      - name: Afficher message de test
+        run: echo "test commit_bugfix"
