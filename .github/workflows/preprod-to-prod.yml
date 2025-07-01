@@ -53,7 +53,7 @@ jobs:
 
       - name: Afficher Tests concluants si merge ok
         if: steps.check_merge.outputs.merge == 'true'
-        run: echo "✅ Tests concluants : contenu de preprod bien mergé dans prod."
+        run: echo "✅ Tests concluants, contenu de preprod bien mergé dans prod."
 
       - name: Échec si pas de merge de preprod
         if: steps.check_merge.outputs.merge == 'false'
