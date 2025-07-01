@@ -1,0 +1,62 @@
+name: Validation merge Preprod ➝ Prod
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  verify-merge:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # pour récupérer tout l'historique
+
+      - name: Vérifier si le dernier commit est un merge de preprod dans prod
+        id: check_merge
+        run: |
+          # On récupère le dernier commit
+          LAST_COMMIT=$(git rev-parse HEAD)
+
+          # On regarde les parents de ce commit
+          PARENTS=$(git log -1 --pretty=%P $LAST_COMMIT)
+
+          # Un commit merge a 2 parents
+          if [ $(echo "$PARENTS" | wc -w) -ne 2 ]; then
+            echo "Ce n'est pas un commit merge"
+            echo "merge=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Trouver les branches des parents
+          PARENT1=$(echo $PARENTS | cut -d' ' -f1)
+          PARENT2=$(echo $PARENTS | cut -d' ' -f2)
+
+          # Vérifier si l'un des parents correspond à preprod
+          # On récupère les branches contenant chaque parent
+          BRANCHES1=$(git branch --contains $PARENT1)
+          BRANCHES2=$(git branch --contains $PARENT2)
+
+          if git merge-base --is-ancestor origin/preprod $PARENT1; then
+            echo "parent1 est dans preprod"
+            echo "merge=true" >> $GITHUB_OUTPUT
+          elif git merge-base --is-ancestor origin/preprod $PARENT2; then
+            echo "parent2 est dans preprod"
+            echo "merge=true" >> $GITHUB_OUTPUT
+          else
+            echo "Aucun parent n'est dans preprod"
+            echo "merge=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Afficher Tests concluants si merge ok
+        if: steps.check_merge.outputs.merge == 'true'
+        run: echo "✅ Tests concluants : contenu de preprod bien mergé dans prod."
+
+      - name: Échec si pas de merge de preprod
+        if: steps.check_merge.outputs.merge == 'false'
+        run: |
+          echo "❌ Le dernier commit sur prod n'est pas un merge de preprod."
+          exit 1
