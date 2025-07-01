@@ -1,0 +1,15 @@
+
+name: Vérification commit sur prod
+
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  test-commit-prod:
+    runs-on: windows-latest
+
+    steps:
+      - name: Afficher message de test
+        run: echo "test commit_prod"
