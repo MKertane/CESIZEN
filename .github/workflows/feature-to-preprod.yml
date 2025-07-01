@@ -1,20 +1,34 @@
-name: Merge Feature to Preprod
+name: Détection merge direct feature → preprod
 
 on:
   push:
     branches:
       - preprod
-  pull_request:
-    branches:
-      - preprod
-    types: [closed]
 
 jobs:
   detect-merge:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'preprod' && github.event.pull_request.head.ref == 'feature'
     runs-on: windows-latest
-    name: Annonce de merge feature -> preprod
     steps:
-      - name: Affichage message
-        run: echo "✅ Merge de 'feature' vers 'preprod' effectué avec succès pour les tests !"
+      - name: Cloner le dépôt
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2  # On récupère les 2 derniers commits pour analyse
+
+      - name: Lire le message du dernier commit
+        id: merge_check
+        run: |
+          echo "🔍 Lecture du message du dernier commit..."
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Message : $COMMIT_MSG"
+
+          if echo "$COMMIT_MSG" | grep -iq "Merge branch 'feature'"; then
+            echo "merge_detected=true" >> $GITHUB_OUTPUT
+          else
+            echo "merge_detected=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Afficher le message si merge détecté
+        if: steps.merge_check.outputs.merge_detected == 'true'
+        run: echo "✅ merge de feature to preprod"
+
 
