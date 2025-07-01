@@ -1,0 +1,16 @@
+name: Afficher merge preprod -> prod
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - prod
+
+jobs:
+  notify-merge:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'prod' && github.event.pull_request.head.ref == 'preprod'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Afficher message de merge
+        run: echo "✅ Merge de preprod to prod effectué avec succès"
