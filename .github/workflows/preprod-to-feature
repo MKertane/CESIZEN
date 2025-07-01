@@ -1,0 +1,26 @@
+name: Check merge from preprod to feature
+
+on:
+  push:
+    branches:
+      - feature
+
+jobs:
+  check-preprod-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Detect if last commit is a merge from preprod
+        run: |
+          echo "Analyzing commit history..."
+          git fetch origin preprod
+          LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Last commit message: $LAST_COMMIT_MSG"
+
+          if git merge-base --is-ancestor origin/preprod HEAD; then
+            echo "::warning::Tests non concluants - Le contenu de preprod a été transféré vers feature."
+          else
+            echo "Pas de fusion détectée depuis preprod."
+          fi
