@@ -39,7 +39,7 @@ jobs:
         run: |
           sonar-scanner \
             -Dsonar.projectKey=MKertane_CESIZEN \
-            -Dsonar.organization=MK-Organisation \
+            -Dsonar.organization=mk-organisation \
             -Dsonar.sources=. \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=$SONAR_TOKEN \
